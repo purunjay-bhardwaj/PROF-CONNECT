@@ -83,12 +83,7 @@ export default function Home() {
           <span className="text-2xl font-black text-on-surface font-headline tracking-tighter">
             ProfConnect
           </span>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="hover:bg-surface-container-high p-2.5 rounded-full transition-all active:scale-90"
-          >
-            <span className="material-symbols-outlined text-on-surface-variant">account_circle</span>
-          </button>
+          
         </header>
 
         {/* ── HERO ───────────────────────────────── */}
