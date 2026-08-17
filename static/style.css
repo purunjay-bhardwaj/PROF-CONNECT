@@ -1,0 +1,318 @@
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: #eef3f8;
+    color: #142033;
+    font-family: Arial, sans-serif
+}
+
+main {
+    max-width: 1100px;
+    margin: auto;
+    padding: 28px
+}
+
+.kiosk {
+    min-height: 94vh;
+    background: #fff;
+    border-radius: 24px;
+    padding: 44px;
+    box-shadow: 0 10px 32px #17315b1c
+}
+
+.brand {
+    font-size: 25px;
+    font-weight: 800;
+    color: #164e91
+}
+
+.brand span {
+    font-size: 15px;
+    font-weight: 400;
+    color: #667085;
+    margin-left: 12px
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin: 48px 0 24px
+}
+
+.avatar {
+    height: 145px;
+    width: 145px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #dbeafe;
+    color: #164e91;
+    font-weight: 800;
+    font-size: 70px
+}
+
+h1 {
+    margin: 0 0 9px;
+    font-size: 42px
+}
+
+p {
+    color: #536174;
+    line-height: 1.5
+}
+
+.profile p {
+    margin: 4px 0;
+    font-size: 20px
+}
+
+.status {
+    display: inline-block;
+    border-radius: 12px;
+    padding: 16px 25px;
+    font-size: 30px;
+    font-weight: 800
+}
+
+.in_office {
+    background: #d1fae5;
+    color: #065f46
+}
+
+.busy {
+    background: #fef3c7;
+    color: #92400e
+}
+
+.away,
+.unavailable {
+    background: #e5e7eb;
+    color: #374151
+}
+
+.offline {
+    background: #fee2e2;
+    color: #991b1b
+}
+
+.message {
+    font-size: 24px
+}
+
+.next {
+    font-size: 20px;
+    font-weight: 700
+}
+
+.book-row {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    margin-top: 34px
+}
+
+.button,
+button {
+    display: inline-block;
+    border: 0;
+    border-radius: 10px;
+    background: #155eef;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 16px 23px;
+    cursor: pointer
+}
+
+.qr {
+    height: 142px;
+    width: 142px;
+    display: block
+}
+
+.updated {
+    color: #7c8797;
+    font-size: 14px
+}
+
+.card {
+    max-width: 650px;
+    margin: 48px auto;
+    background: #fff;
+    padding: 34px;
+    border-radius: 16px;
+    box-shadow: 0 8px 28px #17315b1c
+}
+
+.card.wide {
+    max-width: 1000px
+}
+
+.card.small {
+    max-width: 440px
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start
+}
+
+h2 {
+    margin-top: 35px
+}
+
+label {
+    display: block;
+    font-weight: 700;
+    margin: 16px 0 7px
+}
+
+input,
+textarea,
+select {
+    display: block;
+    width: 100%;
+    margin-top: 7px;
+    padding: 12px;
+    border: 1px solid #c9d2de;
+    border-radius: 8px;
+    font: inherit
+}
+
+textarea {
+    min-height: 90px
+}
+
+.date-form,
+.inline {
+    display: flex;
+    gap: 10px;
+    align-items: end
+}
+
+.date-form label,
+.inline input,
+.inline select {
+    flex: 1
+}
+
+.date-form button,
+.inline button,
+article button {
+    font-size: 14px;
+    padding: 12px 16px
+}
+
+.flash {
+    padding: 12px 15px;
+    margin: 12px 0;
+    border-radius: 8px
+}
+
+.flash.error {
+    background: #fee2e2;
+    color: #991b1b
+}
+
+.flash.success {
+    background: #d1fae5;
+    color: #065f46
+}
+
+.tag {
+    display: inline-block;
+    background: #e0edff;
+    color: #164e91;
+    padding: 7px 10px;
+    border-radius: 7px;
+    margin: 4px
+}
+
+.appointments article {
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e7eb
+}
+
+.appointments form {
+    margin-top: 9px
+}
+
+@media(max-width:650px) {
+    main {
+        padding: 12px
+    }
+
+    .kiosk {
+        padding: 24px
+    }
+
+    .profile {
+        margin: 28px 0;
+        gap: 15px
+    }
+
+    .avatar {
+        height: 80px;
+        width: 80px;
+        font-size: 36px
+    }
+
+    h1 {
+        font-size: 27px
+    }
+
+    .profile p {
+        font-size: 16px
+    }
+
+    .status {
+        font-size: 22px
+    }
+
+    .book-row {
+        align-items: flex-start;
+        flex-direction: column
+    }
+
+    .date-form,
+    .inline {
+        display: block
+    }
+
+    .date-form button,
+    .inline button {
+        margin-top: 10px
+    }
+}
+
+.qr-only {
+  margin-top: 36px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #f8fafc;
+  border: 2px solid #dbeafe;
+  border-radius: 18px;
+  padding: 24px 32px;
+}
+
+.qr-only .qr {
+  width: 190px;
+  height: 190px;
+}
+
+.qr-only h2 {
+  margin: 18px 0 4px;
+  color: #164e91;
+}
+
+.qr-only p {
+  margin: 0;
+}

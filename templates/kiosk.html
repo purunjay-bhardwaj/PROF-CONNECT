@@ -1,0 +1,27 @@
+{% extends 'base.html' %}{% block content %}<section class="kiosk">
+    <div class="brand">ProfConnect <span>Office Availability</span></div>
+    <div class="profile">
+        <div class="avatar" id="initial">{{ professor.name[0] }}</div>
+        <div>
+            <h1 id="name">{{ professor.name }}</h1>
+            <p id="designation">{{ professor.designation }}</p>
+            <p id="department">{{ professor.department }}</p>
+            <p id="office">{{ professor.office }}</p>
+        </div>
+    </div>
+    <div class="status" id="status">Loading status…</div>
+    <p class="message" id="message"></p>
+    <p class="next" id="next"></p>
+    <<div class="qr-only">
+        <img
+            class="qr"
+            src="{{ url_for('qr_code', slug=professor.slug) }}"
+            alt="Scan this QR code to book an appointment"
+        >
+        <h2>Book an appointment</h2>
+        <p>Scan this QR code using your phone camera.</p>
+    </div>
+    <p class="updated" id="updated"></p>
+</section>
+<script>const url = {{ url_for('display_api', slug = professor.slug) | tojson }}; async function refresh() { try { const d = await (await fetch(url, { cache: 'no-store' })).json(); let s = document.querySelector('#status'); s.textContent = d.status.replace('_', ' '); s.className = 'status ' + d.status.toLowerCase(); document.querySelector('#message').textContent = d.message || ''; document.querySelector('#next').textContent = d.next_available ? 'Next appointment slot: ' + new Date(d.next_available).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'No future slots currently available'; document.querySelector('#updated').textContent = 'Last synced: ' + new Date(d.updated_at).toLocaleTimeString() } catch (e) { document.querySelector('#status').textContent = 'OFFLINE — showing saved information'; document.querySelector('#status').className = 'status offline' } } refresh(); setInterval(refresh, 30000);</script>
+{% endblock %}
