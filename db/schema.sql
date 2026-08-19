@@ -117,3 +117,17 @@ create table if not exists public.notification (
 );
 
 create index if not exists idx_notification_recipient on public.notification(recipient_role, recipient_id, created_at desc);
+
+-- ── teacher_availability ───────────────────────────────────
+-- Added later — same deal as `message`/`notification` above: `if not
+-- exists`, safe to run standalone. Backs the professor's own "in office"
+-- toggle (Dashboard) and the public GET /api/availability/{teacher_id}
+-- endpoint the Raspberry Pi door-unit kiosk polls. One row per teacher,
+-- upserted on every toggle — Supabase-backed (not in-memory) so a
+-- backend restart doesn't reset every professor to out-of-office.
+create table if not exists public.teacher_availability (
+  teacher_id  bigint primary key references public.teacher(teacher_id) on delete cascade,
+  in_office   boolean not null default false,
+  note        varchar(180) not null default '',
+  updated_at  timestamptz not null default now()
+);

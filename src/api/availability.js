@@ -30,16 +30,16 @@ export async function fetchAllAvailability() {
   return map
 }
 
-// PATCH /api/availability/me — the signed-in teacher sets their own
+// PUT /api/availability/me — the signed-in teacher sets their own
 // "available in room" status. Broadcasts to every connected browser tab.
-export async function setMyAvailability(available, token) {
+export async function setMyAvailability(available, token, note = '') {
   const res = await fetch(`${API_BASE_URL}/api/availability/me`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ available }),
+    body: JSON.stringify({ in_office: available, note }),
   })
   return handleResponse(res)
 }
