@@ -332,7 +332,7 @@ export default function Meeting() {
                 <div className="mt-3 flex flex-wrap gap-2">
                   <input aria-label="Optional invitation passcode" placeholder="Optional passcode" type="password" maxLength={64} value={invitePasscode} onChange={e => setInvitePasscode(e.target.value)} className="min-w-0 flex-1 rounded-xl border border-outline-variant/30 bg-surface px-3 py-2" />
                   <button onClick={makeInvite} className="rounded-xl bg-primary px-4 py-2 font-bold text-white">Create link</button>
-                  {inviteEnabled && <button onClick={revokeInvite} className="rounded-xl border border-error/40 px-4 py-2 text-error">Revoke</button>}
+                  <button onClick={revokeInvite} className="rounded-xl border border-error/40 px-4 py-2 text-error">Revoke link</button>
                 </div>
                 {inviteLink && <div className="mt-3 break-all rounded-xl bg-surface p-3 text-sm">{inviteLink}</div>}
               </div>}
