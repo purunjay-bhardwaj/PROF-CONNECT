@@ -48,7 +48,6 @@ export default function Meeting() {
   const [chatText, setChatText] = useState('')
   const [invitePasscode, setInvitePasscode] = useState('')
   const [inviteLink, setInviteLink] = useState('')
-  const [inviteEnabled, setInviteEnabled] = useState(false)
   const socketRef = useRef(null)
   const localRef = useRef(null)
   const screenRef = useRef(null)
@@ -252,7 +251,6 @@ export default function Meeting() {
       const link = new URL(`/meeting/${encodeURIComponent(meetingId)}`, window.location.origin)
       link.searchParams.set('invite', result.invite_token)
       setInviteLink(link.href)
-      setInviteEnabled(true)
       await navigator.clipboard?.writeText(link.href)
       setNotice('Invitation link created and copied.')
     } catch (err) {
@@ -263,7 +261,6 @@ export default function Meeting() {
   const revokeInvite = async () => {
     try {
       await revokeMeetingInvite(meetingId)
-      setInviteEnabled(false)
       setInviteLink('')
       setNotice('Invitation link revoked.')
     } catch (err) {
