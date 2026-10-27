@@ -55,7 +55,6 @@ export default function Meeting() {
   const peerConnections = useRef(new Map())
   const queuedMessages = useRef(Promise.resolve())
   const leavingRef = useRef(false)
-  const hostRef = useRef(false)
 
   const send = useCallback((message) => {
     const socket = socketRef.current
@@ -169,7 +168,6 @@ export default function Meeting() {
       localRef.current = stream
       setLocalStream(stream)
       setHost(Boolean(ticket.host))
-      hostRef.current = Boolean(ticket.host)
       setRoomTitle(ticket.title || 'ProfConnect meeting')
       const socket = new WebSocket(meetingSocketURL(meetingId))
       socketRef.current = socket
@@ -182,7 +180,7 @@ export default function Meeting() {
       socket.onerror = () => setError('Could not connect to the meeting server. Check your connection and try again.')
       socket.onclose = () => {
         if (!leavingRef.current) {
-          setPhase(current => current === 'connected' ? 'disconnected' : current)
+          setPhase(current => ['connected', 'joining'].includes(current) ? 'disconnected' : current)
           setNotice('Connection closed. Leave and rejoin to reconnect.')
         }
       }
