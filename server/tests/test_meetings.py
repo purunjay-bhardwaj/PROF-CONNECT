@@ -87,6 +87,7 @@ def fake_db(monkeypatch):
     )
     meetings.rooms.clear()
     meetings.tickets.clear()
+    meetings.join_attempts.clear()
     return db
 
 
