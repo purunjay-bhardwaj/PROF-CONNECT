@@ -28,6 +28,7 @@ export default function App() {
         <Route path="/messages"          element={<Messages />} />
         <Route path="/timetable"         element={<Timetable />} />
         <Route path="/settings"          element={<Settings />} />
+        <Route path="/meeting/:meetingId" element={<Meeting />} />
       </Routes>
     </BrowserRouter>
   )
