@@ -134,3 +134,31 @@ def test_appointment_membership_is_role_scoped():
     assert meetings._is_appointment_member({"sub": "501", "role": "teacher"}, appointment)
     assert not meetings._is_appointment_member({"sub": "999", "role": "student"}, appointment)
     assert not meetings._is_appointment_member({"sub": "1001", "role": "teacher"}, appointment)
+
+
+
+def test_invitation_link_can_issue_a_short_lived_join_ticket(fake_db):
+    meeting = meetings.create_or_get_appointment_meeting(7, "Bearer student")
+    invite = meetings.create_invite(meeting["meeting_id"], meetings.InviteRequest(), "Bearer teacher")
+    joined = meetings.join_meeting(
+        meeting["meeting_id"],
+        meetings.JoinRequest(name="Guest", invite_token=invite["invite_token"]),
+        None,
+        None,
+    )
+    assert joined["token"]
+    assert joined["host"] is False
+    assert meetings._hash(joined["token"]) in meetings.tickets
+
+
+def test_invalid_invitation_cannot_join(fake_db):
+    meeting = meetings.create_or_get_appointment_meeting(7, "Bearer student")
+    meetings.create_invite(meeting["meeting_id"], meetings.InviteRequest(), "Bearer teacher")
+    with pytest.raises(HTTPException) as exc:
+        meetings.join_meeting(
+            meeting["meeting_id"],
+            meetings.JoinRequest(name="Guest", invite_token="not-the-token"),
+            None,
+            None,
+        )
+    assert exc.value.status_code == 403
