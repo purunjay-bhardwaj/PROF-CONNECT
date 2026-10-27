@@ -58,3 +58,79 @@ async def subscribe_notifications(sid, data):
 
 async def broadcast_notification(recipient_role: str, recipient_id, payload: dict) -> None:
     await sio.emit("notification:new", payload, room=f"notify:{recipient_role}:{recipient_id}")
+
+
+# ── WebRTC meeting signalling ────────────────────────────────────────────
+# One room per meeting_room_id. Both participants (student + professor) join
+# the same Socket.IO room keyed by that ID, then exchange SDP offers/answers
+# and ICE candidates through the server as a relay. The server never inspects
+# the WebRTC payloads — it only fans them out to the other peer in the room.
+#
+# Flow:
+#   1. Both sides emit `meeting:join` → server puts them in room `meeting:<id>`
+#      and tells the *other* peer that someone arrived (so they know to initiate).
+#   2. The initiator sends `meeting:offer`  → server forwards to the other peer.
+#   3. The other peer sends `meeting:answer` → server forwards back.
+#   4. Both sides exchange `meeting:ice`    → server forwards each candidate.
+#   5. Either side emits `meeting:leave`    → server removes them and notifies
+#      the other peer so they can show a "call ended" state.
+
+@sio.event
+async def meeting_join(sid, data):
+    room_id = (data or {}).get("roomId")
+    if not room_id:
+        return
+    room = f"meeting:{room_id}"
+    await sio.enter_room(sid, room)
+    # Tell everyone else in the room that a new peer arrived — they become the
+    # initiator and send the offer.
+    await sio.emit("meeting:peer_joined", {}, room=room, skip_sid=sid)
+
+
+@sio.event
+async def meeting_offer(sid, data):
+    room_id = (data or {}).get("roomId")
+    if not room_id:
+        return
+    await sio.emit(
+        "meeting:offer",
+        {"sdp": data.get("sdp")},
+        room=f"meeting:{room_id}",
+        skip_sid=sid,
+    )
+
+
+@sio.event
+async def meeting_answer(sid, data):
+    room_id = (data or {}).get("roomId")
+    if not room_id:
+        return
+    await sio.emit(
+        "meeting:answer",
+        {"sdp": data.get("sdp")},
+        room=f"meeting:{room_id}",
+        skip_sid=sid,
+    )
+
+
+@sio.event
+async def meeting_ice(sid, data):
+    room_id = (data or {}).get("roomId")
+    if not room_id:
+        return
+    await sio.emit(
+        "meeting:ice",
+        {"candidate": data.get("candidate")},
+        room=f"meeting:{room_id}",
+        skip_sid=sid,
+    )
+
+
+@sio.event
+async def meeting_leave(sid, data):
+    room_id = (data or {}).get("roomId")
+    if not room_id:
+        return
+    room = f"meeting:{room_id}"
+    await sio.leave_room(sid, room)
+    await sio.emit("meeting:peer_left", {}, room=room, skip_sid=sid)
