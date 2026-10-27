@@ -275,15 +275,13 @@ export default function Dashboard() {
                           (meeting_room_id is generated server-side on accept, so this is
                           the authoritative gate: the button never appears for pending/declined) */}
                       {r.status === 'accepted' && r.meetingRoomId && (
-                        <a
-                          href={`https://meet.jit.si/${r.meetingRoomId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={() => navigate(`/meeting/${r.meetingRoomId}`)}
                           className="px-3 py-2 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-bold hover:bg-primary/20 transition-colors flex items-center gap-1.5 self-start sm:self-center"
                         >
                           <span className="material-symbols-outlined text-sm">videocam</span>
                           Start Meeting
-                        </a>
+                        </button>
                       )}
                       <span
                         className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full self-start sm:self-center ${

@@ -189,16 +189,13 @@ function AppointmentSection({ title, icon, items, navigate, isStudent, showMeeti
               <div className="flex items-center gap-2 shrink-0 flex-wrap">
                 {/* Join / Start Meeting — only for accepted appointments in the Upcoming section */}
                 {showMeeting && r.meetingRoomId && (
-                  <a
-                    href={`https://meet.jit.si/${r.meetingRoomId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); navigate(`/meeting/${r.meetingRoomId}`) }}
                     className="px-3 py-2 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-bold hover:bg-primary/20 transition-colors flex items-center gap-1.5"
                   >
                     <span className="material-symbols-outlined text-sm">videocam</span>
                     {isStudent ? 'Join Meeting' : 'Start Meeting'}
-                  </a>
+                  </button>
                 )}
 
                 <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shrink-0 ${STATUS_STYLES[r.status] || 'bg-surface-container-highest text-on-surface-variant'}`}>
