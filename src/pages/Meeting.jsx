@@ -164,10 +164,10 @@ export default function Meeting() {
     leavingRef.current = false
     let stream
     try {
+      const ticket = await joinMeeting(meetingId, { name: name.trim() || 'Guest', passcode, inviteToken })
       stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
       localRef.current = stream
       setLocalStream(stream)
-      const ticket = await joinMeeting(meetingId, { name: name.trim() || 'Guest', passcode, inviteToken })
       setHost(Boolean(ticket.host))
       hostRef.current = Boolean(ticket.host)
       setRoomTitle(ticket.title || 'ProfConnect meeting')
@@ -314,7 +314,7 @@ export default function Meeting() {
                 <button onClick={toggleMic} className="rounded-xl border border-outline-variant/30 px-4 py-3 text-sm font-semibold">{micOn ? 'Mute microphone' : 'Unmute microphone'}</button>
                 <button onClick={toggleCamera} className="rounded-xl border border-outline-variant/30 px-4 py-3 text-sm font-semibold">{cameraOn ? 'Turn camera off' : 'Turn camera on'}</button>
                 <button onClick={toggleScreenShare} className="rounded-xl border border-outline-variant/30 px-4 py-3 text-sm font-semibold">{sharing ? 'Stop sharing' : 'Share screen'}</button>
-                {host && <button onClick={() => { send({ type: 'end' }); leave() }} className="rounded-xl bg-error px-4 py-3 text-sm font-bold text-white">End meeting</button>}
+                {host && <button onClick={() => send({ type: 'end' })} className="rounded-xl bg-error px-4 py-3 text-sm font-bold text-white">End meeting</button>}
                 {!host && <button onClick={() => leave()} className="rounded-xl bg-error px-4 py-3 text-sm font-bold text-white">Leave meeting</button>}
               </div>
               {notice && <p className="mt-3 text-sm text-on-surface-variant">{notice}</p>}
