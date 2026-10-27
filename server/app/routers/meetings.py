@@ -13,7 +13,7 @@ import json
 import os
 import secrets
 import time
-from collections import defaultdict
+from collections import defaultdict, deque
 from typing import Optional
 
 from fastapi import APIRouter, Header, HTTPException, Request, WebSocket, WebSocketDisconnect
@@ -34,6 +34,17 @@ TURN_PASSWORD = os.getenv("MEETING_TURN_PASSWORD", "")
 # In-memory signalling state. Persistent meeting metadata remains in Supabase.
 rooms: dict[str, dict[str, dict]] = defaultdict(dict)
 tickets: dict[str, dict] = {}
+join_attempts = defaultdict(deque)
+
+
+def _rate_limit(key: str, maximum: int = 45, window_seconds: int = 300):
+    now = time.monotonic()
+    events = join_attempts[key]
+    while events and events[0] < now - window_seconds:
+        events.popleft()
+    if len(events) >= maximum:
+        raise HTTPException(status_code=429, detail="Too many join attempts. Please wait a few minutes and try again.")
+    events.append(now)
 
 
 class InviteRequest(BaseModel):
@@ -281,6 +292,8 @@ def join_meeting(
     authorization: Optional[str] = Header(default=None),
 ):
     _require_db()
+    client_host = request.client.host if request and request.client else "unknown"
+    _rate_limit(client_host)
     row = _meeting(meeting_id)
     appointment = row["_appointment"]
     claims = _claims_or_none(authorization)
