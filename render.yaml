@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: gather
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_PATH
+        value: /app/data/gather.db
+      - key: MAX_PARTICIPANTS
+        value: "4"
+      - key: ROOM_TTL_HOURS
+        value: "24"
+      - key: PREVIEW_MODE
+        value: "false"
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: TURN_URLS
+        sync: false
+      - key: TURN_SECRET
+        sync: false
+    disk:
+      name: gather-data
+      mountPath: /app/data
+      sizeGB: 1
