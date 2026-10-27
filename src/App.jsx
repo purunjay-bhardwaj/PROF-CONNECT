@@ -10,6 +10,7 @@ import Profile        from './pages/Profile'
 import Messages       from './pages/Messages'
 import Timetable      from './pages/Timetable'
 import Settings       from './pages/Settings'
+import Meeting        from './pages/Meeting'
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/messages"          element={<Messages />} />
         <Route path="/timetable"         element={<Timetable />} />
         <Route path="/settings"          element={<Settings />} />
+        <Route path="/meeting/:meetingId" element={<Meeting />} />
       </Routes>
     </BrowserRouter>
   )
