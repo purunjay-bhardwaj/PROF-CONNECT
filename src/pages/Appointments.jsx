@@ -5,6 +5,7 @@ import Navbar     from '../components/Navbar'
 import BottomNav  from '../components/BottomNav'
 import { fetchMyAppointmentsAsStudent, fetchAppointmentsForTeacher } from '../api/appointments'
 import { getToken, getRole } from '../lib/auth'
+import { createOrGetAppointmentMeeting } from '../api/meetings'
 
 function formatDate(dateStr) {
   if (!dateStr) return '—'
@@ -174,9 +175,30 @@ function AppointmentSection({ title, icon, items, navigate, isStudent, emptyText
                   {formatDate(r.date)} · {formatTime(r.time)}
                 </p>
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shrink-0 ${STATUS_STYLES[r.status] || 'bg-surface-container-highest text-on-surface-variant'}`}>
-                {r.status}
-              </span>
+              <div className="flex shrink-0 flex-col items-end gap-2">
+                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full ${STATUS_STYLES[r.status] || 'bg-surface-container-highest text-on-surface-variant'}`}>
+                  {r.status}
+                </span>
+                {r.status === 'accepted' && (
+                  <button
+                    type="button"
+                    onClick={async (event) => {
+                      event.stopPropagation()
+                      const button = event.currentTarget
+                      button.disabled = true
+                      button.textContent = 'Opening…'
+                      try {
+                        const meeting = await createOrGetAppointmentMeeting(r.id)
+                        navigate(`/meeting/${encodeURIComponent(meeting.meeting_id)}`)
+                      } catch (error) {
+                        button.textContent = error.message || 'Try again'
+                        button.disabled = false
+                      }
+                    }}
+                    className="rounded-lg bg-primary px-3 py-2 text-xs font-bold text-white hover:opacity-90"
+                  >Join meeting</button>
+                )}
+              </div>
             </div>
           ))}
         </div>
