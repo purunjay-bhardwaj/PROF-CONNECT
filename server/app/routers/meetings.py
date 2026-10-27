@@ -337,6 +337,14 @@ async def meeting_signal(ws: WebSocket, meeting_id: str):
             await ws.send_json({"type": "error", "detail": "Join ticket is invalid or expired. Please rejoin."})
             await ws.close(code=1008)
             return
+        # Re-check persisted lifecycle/access after ticket issuance so a ticket
+        # minted just before revocation/end cannot open a stale room.
+        try:
+            _meeting(meeting_id)
+        except HTTPException:
+            await ws.send_json({"type": "error", "detail": "This meeting is no longer available. Please request a new invitation."})
+            await ws.close(code=1008)
+            return
         person = {
             **ticket, "ws": ws, "send_lock": asyncio.Lock(),
             "mic": False, "camera": False, "hand": False, "sharing": False,
