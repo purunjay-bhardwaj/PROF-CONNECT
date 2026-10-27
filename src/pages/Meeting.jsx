@@ -29,7 +29,7 @@ function VideoTile({ name, stream, local = false, camera = true, mic = true, hos
 export default function Meeting() {
   const { meetingId } = useParams()
   const navigate = useNavigate()
-  const inviteToken = new URLSearchParams(window.location.search).get('invite') || ''
+  const [inviteToken] = useState(() => new URLSearchParams(window.location.search).get('invite') || '')
   const profile = getProfile()
   const profileName = profile?.name || ''
   const [name, setName] = useState(profileName)
@@ -270,6 +270,15 @@ export default function Meeting() {
       setError(err.message || 'Could not revoke the invitation.')
     }
   }
+
+  useEffect(() => {
+    // Keep the bearer-like invite token out of the address bar/referrer after capturing it.
+    if (inviteToken) {
+      const cleanUrl = new URL(window.location.href)
+      cleanUrl.searchParams.delete('invite')
+      window.history.replaceState({}, '', cleanUrl)
+    }
+  }, [inviteToken])
 
   useEffect(() => () => {
     leavingRef.current = true
