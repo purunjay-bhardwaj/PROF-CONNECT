@@ -260,6 +260,8 @@ Apply `db/migrations/20261027_meetings.sql` to the existing Supabase project aft
 
 The existing backend workflow monitors `server/**` and the frontend workflow monitors `src/**`, so the integrated files trigger the existing deployment workflows when merged to `main`. Apply the SQL migration before enabling meetings in production.
 
+Frontend CI runs `npm run build` and the Playwright meeting browser tests. Backend CI runs the meeting authorization/invitation tests before triggering deployment.
+
 After deployment, verify:
 1. An accepted appointment can create and open its meeting for both appointment participants.
 2. A pending, declined, or unrelated appointment is rejected by the backend.
