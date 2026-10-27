@@ -81,8 +81,8 @@ def fake_db(monkeypatch):
     monkeypatch.setattr(
         meetings, "require_claims",
         lambda authorization: {
-            "sub": "501" if authorization == "Bearer teacher" else "1001",
-            "role": "teacher" if authorization == "Bearer teacher" else "student",
+            "sub": "501" if authorization == "Bearer teacher" else ("999" if authorization == "Bearer stranger" else "1001"),
+            "role": "teacher" if authorization == "Bearer teacher" else ("student" if authorization in ("Bearer student", "Bearer stranger") else "student"),
         },
     )
     meetings.rooms.clear()
@@ -97,8 +97,7 @@ def test_only_accepted_appointment_members_can_create_meetings(fake_db):
 
     with pytest.raises(HTTPException) as exc:
         meetings.create_or_get_appointment_meeting(7, "Bearer stranger")
-    # The fake maps non-teacher tokens to the student; use a separate foreign identity.
-    assert exc.value.status_code in (200, 403)
+    assert exc.value.status_code == 403
 
 
 def test_pending_appointment_cannot_create_meeting(fake_db):
@@ -109,8 +108,8 @@ def test_pending_appointment_cannot_create_meeting(fake_db):
 
 
 def test_invitation_token_is_hashed_and_revocable(fake_db, monkeypatch):
-    meetings.create_or_get_appointment_meeting(7, "Bearer student")
-    invite = meetings.create_invite("unused", meetings.InviteRequest(), "Bearer teacher")
+    meeting = meetings.create_or_get_appointment_meeting(7, "Bearer student")
+    invite = meetings.create_invite(meeting["meeting_id"], meetings.InviteRequest(), "Bearer teacher")
     assert invite["invite_enabled"] is True
     assert invite["invite_token"]
     row = fake_db.tables["meeting"][0]
